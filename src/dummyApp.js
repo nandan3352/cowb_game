@@ -32,7 +32,7 @@ const App = () => {
       }
     }
     setSecretWord(secret);
-    setSecretWord("abc");
+    setSecretWord("avf");
   };
 
   const handleInputChange = (event) => {
@@ -47,7 +47,6 @@ const App = () => {
   const startNewGame = () => {
     setGuessWord('');
     setGuessList([]);
-
     setCows(0);
     setBulls(0);
     setButtonVisible(true);

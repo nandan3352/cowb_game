@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/cowb_game/static/css/main.e7a6f947.css",
+    "main.js": "/cowb_game/static/js/main.f31d75bf.js",
+    "index.html": "/cowb_game/index.html",
+    "main.e7a6f947.css.map": "/cowb_game/static/css/main.e7a6f947.css.map",
+    "main.f31d75bf.js.map": "/cowb_game/static/js/main.f31d75bf.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e7a6f947.css",
+    "static/js/main.f31d75bf.js"
+  ]
+}

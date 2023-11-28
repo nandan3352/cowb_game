@@ -12,9 +12,11 @@ const App = () => {
   const [bulls, setBulls] = useState(0);
   const [buttonVisible, setButtonVisible] = useState(true);
   const [successMessage, setSuccessMessage] = useState('');
+  const [failureMessage, setFailureMessage] = useState('');
   const [visible,setVisible]=useState(false);
   const [hints,setHints]=useState(0);
   const [hintList,setHintList]=useState([]);
+  const [reveal,setReveal]=useState(0);
   useEffect(() => {
     if (wordLength > 0) {
       generateSecretWord();
@@ -24,7 +26,6 @@ const App = () => {
   const generateSecretWord = () => {
     const uniqueChars = 'abcdefghijklmnopqrstuvwxyz';
     let secret = '';
-
     while (secret.length < parseInt(wordLength)) {
       const randomChar = uniqueChars[Math.floor(Math.random() * uniqueChars.length)];
       if (!secret.includes(randomChar)) {
@@ -34,19 +35,30 @@ const App = () => {
     setSecretWord(secret);
   };
 
-  const handleInputChange = (event) => {
-    const value = event.target.value;
-    if (value >= 1 && value <= 26) {
-      setWordLength(value);
-    } else {
-      notifyError('Word length should be between 1 and 26.');
+  const handleInputChange = (e) => {
+    const inputValue = e.target.value;
+    if (inputValue === '') {
+     setWordLength('');
     }
+    else {
+      const parsedValue = parseInt(inputValue, 10);
+
+      if (!isNaN(parsedValue) && parsedValue >= 1 && parsedValue <= 26) {
+        setWordLength(parsedValue);
+      } else {
+        notifyError('Please enter a valid integer between 1 and 26');
+      }
+    }
+
   };
 
   const startNewGame = () => {
     setGuessWord('');
     setGuessList([]);
-
+    setWordLength('');
+    setHints(0);
+    setReveal(0);
+    setHintList([]);
     setCows(0);
     setBulls(0);
     setButtonVisible(true);
@@ -54,10 +66,10 @@ const App = () => {
     generateSecretWord();
   };
 
-  const notifySuccess = (message) => toast.success(message);
-  const notifyError = (message) => toast.error(message);
+const notifyError = (message) => toast.error(message);
 
   const submitGuess = () => {
+    if(wordLength!=0){ 
     if (guessWord.length !== parseInt(wordLength) || !/^[a-zA-Z]+$/.test(guessWord)) {
       notifyError('Please enter a valid word with the correct length.');
       return;
@@ -66,15 +78,19 @@ const App = () => {
       notifyError('Duplicate characters are not allowed.');
       return;
     }
-    checkGuess();
+    checkGuess();}
+    else{
+      notifyError("Enter word length");
+    }
   };
   const hasDuplicateCharacters = (word) => {
     const charSet = new Set(word);
     return charSet.size !== word.length;
   };
   const hint1 = () => {
+    if(wordLength!=''){ 
     setHints((prevHints) => prevHints + 1);
-    const vowels = 'aeiouAEIOU';
+    const vowels = 'aeiou';
     let vowelCount = 0;
     for (let i = 0; i < secretWord.length; i++) {
       const currentChar = secretWord[i];
@@ -83,23 +99,46 @@ const App = () => {
       }
     }
     let s;
-    if(vowelCount===0) s=`There are no vowels in the string`;
-    else if(vowelCount===1) s=`There is 1 vowel in the string`;
-    else s=`There are ${vowelCount} vowels in the string`;
+    if(vowelCount===0) s=`There are no vowels`;
+    else if(vowelCount===1) s=`There is 1 vowel`;
+    else s=`There are ${vowelCount} vowels`;
     setHintList((prevHints) => [
       ...prevHints,
       s,
     ]);
-  };
-
+  }
+else{
+  notifyError("Enter word length")
+}};
     let randomIndex=Math.floor(Math.random() * secretWord.length);
   const hint2 = () => {
     setHints((prevHints) => prevHints + 1);
-    const s = `The character at index ${randomIndex} is ${secretWord[randomIndex]}`;
-    setHintList((prevHints) => [...prevHints, s]);
+    var s1;
+    if(randomIndex===0) s1=`The 1st character is ${secretWord[randomIndex]}`;
+    else if(randomIndex===1) s1=`The 2nd character is ${secretWord[randomIndex]}`;
+    else if(randomIndex===2) s1=`The 3rd character is ${secretWord[randomIndex]}`;
+    else s1 = `The ${randomIndex+1}th character is ${secretWord[randomIndex]}`;
+    setHintList((prevHints) => [...prevHints, s1]);
   };
 
-   
+   const revealAnswer=()=>{
+ if(wordLength!='') { 
+    setReveal(1);
+    setButtonVisible(false);
+    setVisible(false);
+    setHintList([]);
+    setGuessList([]);
+    setCows(0);
+    setBulls(0);
+    setHints(3);
+    let successMsg = `Failed! The correct word is ${secretWord}`;
+   setFailureMessage(successMsg);
+   setWordLength();}
+   else{
+    notifyError("Enter word length!")
+    setWordLength();
+   }
+   }
   const checkGuess = () => {
     let newCows = 0;
     let newBulls = 0;
@@ -127,7 +166,9 @@ setVisible(true);
       setButtonVisible(false);
       setVisible(false);
       setHintList([]);
+      setWordLength('');
       setGuessList([]);
+      setReveal(1);
       setCows(0);
       setBulls(0);
       setHints(3);
@@ -145,7 +186,7 @@ setVisible(true);
       <div>
         <label htmlFor="wordLength">Enter word length:</label>
         <input
-          type="number"
+          type="text"
           id="wordLength"
           value={wordLength}
           onChange={handleInputChange}
@@ -165,12 +206,19 @@ setVisible(true);
       </div>
 
 <div>
-        {hints <=2 ?(
+        { hints <=2 ?(
         <div>
         {hints===0 && <button id="hint1" onClick={hint1}>Give First Hint</button>}
         {hints===1 && <button id="hint2" onClick={hint2}>Give Second Hint</button>}
         {hints===2 && <button id="hint3" >No More Hints!</button>}
         </div> ):(<div></div>)}
+</div>
+<div>
+  {
+    reveal==1 ?
+     ( <div></div>):
+     ( <button onClick={revealAnswer} id="hint3" >Reveal Answer</button>)
+  }
 </div>
 
 <div>
@@ -210,6 +258,9 @@ setVisible(true);
       </div>
       <div id="successMessage">
         {successMessage && <p style={{ color: 'blue' }}>{successMessage}</p>}
+      </div>
+      <div id="failureMessage">
+        {failureMessage && <p style={{color: 'red'}}>{failureMessage}</p>}
       </div>
       <ToastContainer autoClose={6000} />
     </div>

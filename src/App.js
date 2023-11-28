@@ -263,6 +263,7 @@ setVisible(true);
       <div id="failureMessage">
         {failureMessage && <p style={{color: 'red'}}>{failureMessage}</p>}
       </div>
+      
       <ToastContainer autoClose={6000} />
     </div>
   );

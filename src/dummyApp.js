@@ -62,6 +62,7 @@ const App = () => {
     setCows(0);
     setBulls(0);
     setButtonVisible(true);
+    setFailureMessage('')
     setSuccessMessage('');
     generateSecretWord();
   };
@@ -124,6 +125,7 @@ else{
    const revealAnswer=()=>{
  if(wordLength!='') { 
     setReveal(1);
+    setWordLength();
     setButtonVisible(false);
     setVisible(false);
     setHintList([]);
@@ -131,14 +133,12 @@ else{
     setCows(0);
     setBulls(0);
     setHints(3);
-    let successMsg = `Failed! The correct word is ${secretWord}`;
-   setFailureMessage(successMsg);
-   setWordLength();}
+    setFailureMessage(`Failed! The correct word is ${secretWord}`);
+   }
    else{
     notifyError("Enter word length!")
     setWordLength();
-   }
-   }
+   }}
   const checkGuess = () => {
     let newCows = 0;
     let newBulls = 0;

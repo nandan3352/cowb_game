@@ -59,6 +59,7 @@ const App = () => {
     setHints(0);
     setReveal(0);
     setHintList([]);
+    setFailureMessage('');
     setCows(0);
     setBulls(0);
     setButtonVisible(true);

@@ -32,7 +32,6 @@ const App = () => {
       }
     }
     setSecretWord(secret);
-    setSecretWord("abc");
   };
 
   const handleInputChange = (event) => {
